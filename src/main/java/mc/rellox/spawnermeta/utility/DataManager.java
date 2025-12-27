@@ -597,7 +597,7 @@ public final class DataManager {
 			cs.setMinSpawnDelay(s);
 		}
 		cs.setDelay(s);
-		cs.update();
+		cs.update(false, false);
 	}
 
 	public static int getDelay(Block block) {
