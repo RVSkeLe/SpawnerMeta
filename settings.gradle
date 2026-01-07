@@ -1,0 +1,12 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url "https://repo.papermc.io/repository/maven-public/" }
+    }
+}
+
+rootProject.name = "SpawnerMeta"
+
+include "common"
+include "NMS:v1_21_1",
+        "NMS:v1_21_6"

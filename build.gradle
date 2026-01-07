@@ -1,0 +1,81 @@
+plugins {
+    id "java"
+    id "com.gradleup.shadow" version "9.3.0"
+}
+
+group = "mc.rellox"
+version = "25.5"
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+        maven { url "https://repo.bg-software.com/repository/api/" }
+        maven { url "https://repo.rosewooddev.io/repository/public/" }
+        maven { url "https://repo.papermc.io/repository/maven-public/" }
+        maven { url "https://maven.enginehub.org/repo/" }
+        maven { url "https://repo.tcoded.com/releases" }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "ISO-8859-1"
+}
+
+tasks.build {
+    dependsOn shadowJar
+}
+
+tasks.jar {
+    enabled = false
+}
+
+
+dependencies {
+    // Spigot API
+    compileOnly "org.spigotmc:spigot-api:1.21.10-R0.1-SNAPSHOT"
+
+    // Hooks
+    compileOnly "com.github.brcdev-minecraft:shopgui-api:3.0.0"
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7.1"
+    compileOnly "com.bgsoftware:WildStackerAPI:2024.3"
+    compileOnly "com.bgsoftware:WildToolsAPI:2024.1"
+    compileOnly "com.bgsoftware:SuperiorSkyblockAPI:2023.3"
+    compileOnly "org.black_ixx:playerpoints:3.2.7"
+    compileOnly "com.intellectualsites.plotsquared:plotsquared-core:7.5.11"
+    compileOnly "com.sk89q.worldedit:worldedit-core:7.3.17-SNAPSHOT"
+    compileOnly "com.github.GriefPrevention:GriefPrevention:16.18.2"
+
+    // Shaded libraries
+    implementation "com.tcoded:FoliaLib:0.5.1"
+    implementation "org.bstats:bstats-bukkit:3.1.0"
+
+    // NMS + Common
+    implementation project(":common")
+    implementation project(":NMS:v1_21_1")
+    implementation project(":NMS:v1_21_6")
+}
+
+configurations.configureEach {
+    resolutionStrategy {
+        force("org.apache.logging.log4j:log4j-bom:2.24.1")
+        force("com.google.guava:guava:33.3.1-jre")
+        force("com.google.code.gson:gson:2.11.0")
+        force("it.unimi.dsi:fastutil:8.5.15")
+    }
+}
+
+shadowJar {
+    archiveBaseName.set("SpawnerMeta")
+    archiveClassifier.set("")
+
+    relocate "com.tcoded.folialib", "mc.rellox.spawnermeta.lib.folialib"
+    relocate "org.bstats", "mc.rellox.spawnermeta.lib.bstats"
+}
