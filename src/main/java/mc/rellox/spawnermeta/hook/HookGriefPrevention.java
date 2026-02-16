@@ -32,7 +32,7 @@ public class HookGriefPrevention implements HookInstance {
         if (claim == null) {
             return true;
         }
-        return claim.checkPermission(player, ClaimPermission.Inventory, null) == null;
+        return claim.checkPermission(player, ClaimPermission.Container, null) == null;
     }
 
 }
