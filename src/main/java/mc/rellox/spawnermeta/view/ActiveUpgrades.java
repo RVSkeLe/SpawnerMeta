@@ -287,7 +287,9 @@ public final class ActiveUpgrades implements Listener, IUpgrades {
 
 	@Override
 	public void update() {
-		generator.update();
+		SpawnerMeta.scheduler().runAtLocation(generator.block().getLocation(), task -> {
+			generator.update();
+		});
 		
 		layout.fill(v);
 		layout.fill(v, stats(), SlotField.upgrade_stats);
