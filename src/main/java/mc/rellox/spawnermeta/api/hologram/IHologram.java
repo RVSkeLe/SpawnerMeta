@@ -28,12 +28,6 @@ public interface IHologram {
 	IGenerator generator();
 	
 	/**
-	 * @return Set of players who sees this spawner hologram
-	 */
-	
-	Set<Player> viewers();
-	
-	/**
 	 * Updates spawner hologram players.
 	 */
 	

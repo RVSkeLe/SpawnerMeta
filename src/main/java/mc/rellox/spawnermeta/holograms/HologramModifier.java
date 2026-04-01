@@ -1,36 +1,45 @@
 package mc.rellox.spawnermeta.holograms;
 
-import java.util.Set;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import mc.rellox.spawnermeta.version.IVersion;
-import mc.rellox.spawnermeta.version.Version;
+import mc.rellox.spawnermeta.holograms.provider.HologramHandle;
+import mc.rellox.spawnermeta.holograms.provider.HologramProvider;
+import mc.rellox.spawnermeta.holograms.provider.HologramProviders;
+import mc.rellox.spawnermeta.holograms.provider.NoopHologramProvider;
+import mc.rellox.spawnermeta.text.Text;
 
 public class HologramModifier {
 	
-	private final IVersion v;
+	private final HologramProvider provider;
 	
 	public HologramModifier() {
-		this.v = Version.v;
+		this.provider = HologramProviders.resolve();
+		if(provider instanceof NoopHologramProvider) {
+			Text.logInfo("Holograms are enabled, but no supported provider plugin was detected.");
+		} else {
+			Text.logInfo("Holograms provider: " + provider.name() + ".");
+		}
 	}
 	
-	public Object create(Location l, String name) {
-		return v.hologram(l, name);
+	public HologramHandle create(Location l, String name) {
+		return provider.create(l, name);
 	}
 	
-	public void spawn(Player player, Object entity) {
-		v.send(player, v.spawn(entity), v.meta(entity));
+	public void spawn(Player player, HologramHandle hologram) {
+		hologram.show(player);
 	}
 
-	public void destroy(Player player, Object entity) {
-		v.send(player, v.destroy(entity));
+	public void destroy(Player player, HologramHandle hologram) {
+		hologram.hide(player);
 	}
 
-	public void update(Set<Player> players, Object entity, String name) {
-		v.name(entity, name);
-		v.send(players, v.meta(entity));
+	public void update(HologramHandle hologram, String name) {
+		hologram.update(name);
+	}
+
+	public void delete(HologramHandle hologram) {
+		hologram.delete();
 	}
 
 }

@@ -9,7 +9,6 @@ public final class Version {
 	public static final String server;
 
 	public static final VersionType version;
-	public static final IVersion v;
 	static {
 		String s = Bukkit.getServer().getClass().getPackage().getName();
 		server = s.substring(s.lastIndexOf('.') + 1);
@@ -50,7 +49,6 @@ public final class Version {
 		else if(server.contains("v1_15_R1")) version = VersionType.v_15_1;
 		else if(server.contains("v1_14_R1")) version = VersionType.v_14_1;
 		else version = null;
-		v = version == null ? null : version.build();
 	}
 
 	public enum VersionType {
@@ -71,14 +69,6 @@ public final class Version {
 		@Deprecated(since = "25.5")
 		public boolean high(VersionType type) {
 			return atleast(type);
-		}
-
-		private IVersion build() {
-			return RF.build(
-							RF.get("mc.rellox.spawnermeta.version.types.IVersion1"
-									+ name().substring(1)))
-					.as(IVersion.class)
-					.instance();
 		}
 
 	}
