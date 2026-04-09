@@ -23,4 +23,8 @@ public class Hologram extends AbstractHologram {
 						"name", type);
 	}
 
+	@Override
+	public void update() {
+
+	}
 }

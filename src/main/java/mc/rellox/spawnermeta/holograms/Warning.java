@@ -16,4 +16,8 @@ public class Warning extends AbstractHologram {
 		return Language.get("Holograms.warning");
 	}
 
+	@Override
+	public void update() {
+
+	}
 }
