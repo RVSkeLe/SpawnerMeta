@@ -15,15 +15,13 @@ import com.plotsquared.core.PlotAPI;
 import com.plotsquared.core.PlotSquared;
 import com.plotsquared.core.events.PlotDeleteEvent;
 import com.plotsquared.core.plot.Plot;
-import com.plotsquared.core.util.query.PlotQuery;
-import com.sk89q.worldedit.math.BlockVector3;
 
 import mc.rellox.spawnermeta.api.spawner.IGenerator;
 import mc.rellox.spawnermeta.configuration.Settings;
 import mc.rellox.spawnermeta.spawner.generator.GeneratorRegistry;
 
 public class HookPlotSquared implements HookInstance {
-	
+
 	private PlotAPI api;
 
 	@Override
@@ -42,79 +40,76 @@ public class HookPlotSquared implements HookInstance {
 		api = new PlotAPI();
 		api.registerListener(this);
 	}
-	
+
 	public void filter(IGenerator generator, List<Location> locations) {
-		if(check(generator.world()) == true) return;
-		
+		if(check(generator.world())) return;
+
 		UUID owner = generator.cache().owner();
 		if(owner == null) return;
-		
-		List<Plot> plots = PlotQuery.newQuery()
-				.inWorld(generator.world().getName())
-				.withMember(owner)
-				.asList();
-		
-		for(int i = locations.size() - 1; i >= 0; i--) {
-			Location l = locations.get(i);
-			if(plots.stream().anyMatch(plot -> in(plot, l))) continue;
-			locations.remove(i);
-		}
+
+		locations.removeIf(location -> {
+			Plot plot = plot(location);
+			return plot == null || !plot.isAdded(owner);
+		});
 	}
-	
+
 	public boolean modifiable(IGenerator generator, Player player) {
-		if(check(generator.world()) == true) return true;
-		
+		if(check(generator.world())) return true;
+
 		UUID owner = generator.cache().owner();
-		if(owner == null || owner.equals(player.getUniqueId()) == true) return true;
-		Block block = generator.block();
-		Plot plot = Plot.getPlot(com.plotsquared.core.location.Location.at(
-				block.getWorld().getName(),
-				block.getX(), block.getY(), block.getZ()));
-		return plot == null ? true : plot.isAdded(player.getUniqueId());
+		if(owner == null || owner.equals(player.getUniqueId())) return true;
+
+		Plot plot = plot(generator.block());
+		return plot == null || plot.isAdded(player.getUniqueId());
 	}
 
 	@Subscribe
 	public void onPlotDelete(PlotDeleteEvent event) {
-		Plot plot = event.getPlot();
 		World world = Bukkit.getWorld(event.getWorld());
-		GeneratorRegistry.remove(world, true, g -> in(plot, g.block()));
+		if(world == null) return;
+
+		Plot deleted = event.getPlot();
+
+		GeneratorRegistry.remove(world, true, generator -> {
+			Plot plot = plot(generator.block());
+			return plot != null && plot.getId().equals(deleted.getId());
+		});
 	}
-	
+
 	public boolean isPlotWorld(World world) {
 		return PlotSquared.platform().plotAreaManager().hasPlotArea(world.getName());
 	}
-	
+
 	public boolean inside(Block block, Entity entity) {
-		if(check(block.getWorld()) == true) return true;
-		
-		Plot plot = Plot.getPlot(com.plotsquared.core.location.Location.at(
-				block.getWorld().getName(),
-				block.getX(), block.getY(), block.getZ()));
-		if(plot == null) return true;
-		Location at = entity.getLocation();
-		return plot.getRegions().stream().anyMatch(region -> {
-			BlockVector3 vector = BlockVector3.at(at.getX(), at.getY(), at.getZ());
-			return region.contains(vector);
-		});
+		if(check(block.getWorld())) return true;
+
+		Plot source = plot(block);
+		if(source == null) return true;
+
+		Plot target = plot(entity.getLocation());
+		return target != null
+				&& source.getBasePlot(false).equals(target.getBasePlot(false));
 	}
-	
+
 	private boolean check(World world) {
-		return Settings.settings.hooks_plot_squared_use_plot_filter == false
-				|| isPlotWorld(world) == false;
+		return !Settings.settings.hooks_plot_squared_use_plot_filter
+				|| !isPlotWorld(world);
 	}
-	
-	private boolean in(Plot plot, Block block) {
-		return plot.getRegions().stream().anyMatch(region -> {
-			var vector = BlockVector3.at(block.getX(), block.getY(), block.getZ());
-			return region.contains(vector);
-		});
+
+	private Plot plot(Block block) {
+		return Plot.getPlot(com.plotsquared.core.location.Location.at(
+				block.getWorld().getName(),
+				block.getX(),
+				block.getY(),
+				block.getZ()));
 	}
-	
-	private boolean in(Plot plot, Location l) {
-		return plot.getRegions().stream().anyMatch(region -> {
-			var vector = BlockVector3.at(l.getX(), l.getY(), l.getZ());
-			return region.contains(vector);
-		});
+
+	private Plot plot(Location location) {
+		return Plot.getPlot(com.plotsquared.core.location.Location.at(
+				location.getWorld().getName(),
+				location.getBlockX(),
+				location.getBlockY(),
+				location.getBlockZ()));
 	}
 
 }
