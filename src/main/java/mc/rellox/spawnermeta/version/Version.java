@@ -10,78 +10,52 @@ public final class Version {
 
 	public static final VersionType version;
 	public static final IVersion v;
-	public static final boolean recognized;
-	private static final Throwable hologramFailure;
 	static {
 		String s = Bukkit.getServer().getClass().getPackage().getName();
 		server = s.substring(s.lastIndexOf('.') + 1);
 		String bukkit = Bukkit.getBukkitVersion();
 
-		VersionType mapped = mapping(server, bukkit);
-		recognized = mapped != null;
-		// Unknown versions are treated as the newest Bukkit feature level only.
-		// NMS holograms remain disabled unless an exact mapping was recognized.
-		version = recognized ? mapped : VersionType.v_26;
-
-		IVersion adapter = null;
-		Throwable failure = null;
-		if(recognized) {
-			try {
-				adapter = version.build();
-			} catch(Throwable t) {
-				failure = t;
-			}
-		}
-		v = adapter;
-		hologramFailure = failure;
-	}
-
-	public static boolean holograms() {
-		return v != null;
-	}
-
-	public static Throwable hologramFailure() {
-		return hologramFailure;
-	}
-
-	private static VersionType mapping(String server, String bukkit) {
-		if(bukkitCheck(bukkit, "26.3")
-				|| bukkitCheck(bukkit, "26.2")
-				|| bukkitCheck(bukkit, "26.1.2")
-				|| bukkitCheck(bukkit, "26.1.1")
-				|| bukkitCheck(bukkit, "26.1")) return VersionType.v_26;
-		if(server.contains("v1_21_R7") || bukkit.startsWith("1.21.11-R0.1")) return VersionType.v_21_7;
-		if(server.contains("v1_21_R6") || bukkit.startsWith("1.21.9-R0.1")
-				|| bukkit.startsWith("1.21.10-R0.1")) return VersionType.v_21_6;
-		if(server.contains("v1_21_R5") || bukkit.startsWith("1.21.6-R0.1")
-				|| bukkit.startsWith("1.21.7-R0.1") || bukkit.startsWith("1.21.8-R0.1")) return VersionType.v_21_5;
-		if(server.contains("v1_21_R4") || bukkit.startsWith("1.21.5-R0.1")) return VersionType.v_21_4;
-		if(server.contains("v1_21_R3") || bukkit.startsWith("1.21.4-R0.1")) return VersionType.v_21_3;
-		if(server.contains("v1_21_R2") || bukkit.startsWith("1.21.3-R0.1")) return VersionType.v_21_2;
-		if(server.contains("v1_21_R1") || bukkit.startsWith("1.21-R0.1")
-				|| bukkit.startsWith("1.21.1-R0.1")) return VersionType.v_21_1;
-		if(server.contains("v1_20_R4") || bukkit.startsWith("1.20.6-R0.1")) return VersionType.v_20_4;
-		if(server.contains("v1_20_R3")) return VersionType.v_20_3;
-		if(server.contains("v1_20_R2")) return VersionType.v_20_2;
-		if(server.contains("v1_20_R1")) return VersionType.v_20_1;
-		if(server.contains("v1_19_R3")) return VersionType.v_19_3;
-		if(server.contains("v1_19_R2")) return VersionType.v_19_2;
-		if(server.contains("v1_19_R1")) return VersionType.v_19_1;
-		if(server.contains("v1_18_R2")) return VersionType.v_18_2;
-		if(server.contains("v1_18_R1")) return VersionType.v_18_1;
-		if(server.contains("v1_17_R1")) return VersionType.v_17_1;
-		if(server.contains("v1_16_R3")) return VersionType.v_16_3;
-		if(server.contains("v1_16_R2")) return VersionType.v_16_2;
-		if(server.contains("v1_16_R1")) return VersionType.v_16_1;
-		if(server.contains("v1_15_R1")) return VersionType.v_15_1;
-		if(server.contains("v1_14_R1")) return VersionType.v_14_1;
-		return null;
-	}
-
-	private static boolean bukkitCheck(String actual, String version) {
-		return actual.equals(version)
-				|| actual.startsWith(version + "-")
-				|| actual.startsWith(version + ".build.");
+		if(bukkit.startsWith("26.3")
+				|| bukkit.startsWith("26.2")
+				|| bukkit.startsWith("26.1.2")
+				|| bukkit.startsWith("26.1.1")
+				|| bukkit.startsWith("26.1")) version = VersionType.v_26;
+		else if(server.contains("v1_21_R7")
+				|| bukkit.startsWith("1.21.11-R0.1")) version = VersionType.v_21_7;
+		else if(server.contains("v1_21_R6")
+				|| bukkit.startsWith("1.21.9-R0.1")
+				|| bukkit.startsWith("1.21.10-R0.1")) version = VersionType.v_21_6;
+		else if(server.contains("v1_21_R5")
+				|| bukkit.startsWith("1.21.6-R0.1")
+				|| bukkit.startsWith("1.21.7-R0.1")
+				|| bukkit.startsWith("1.21.8-R0.1")) version = VersionType.v_21_5;
+		else if(server.contains("v1_21_R4")
+				|| bukkit.startsWith("1.21.5-R0.1")) version = VersionType.v_21_4;
+		else if(server.contains("v1_21_R3")
+				|| bukkit.startsWith("1.21.4-R0.1")) version = VersionType.v_21_3;
+		else if(server.contains("v1_21_R2")
+				|| bukkit.startsWith("1.21.3-R0.1")) version = VersionType.v_21_2;
+		else if(server.contains("v1_21_R1")
+				|| bukkit.startsWith("1.21-R0.1")
+				|| bukkit.startsWith("1.21.1-R0.1")) version = VersionType.v_21_1;
+		else if(server.contains("v1_20_R4")
+				|| bukkit.startsWith("1.20.6-R0.1")) version = VersionType.v_20_4;
+		else if(server.contains("v1_20_R3")) version = VersionType.v_20_3;
+		else if(server.contains("v1_20_R2")) version = VersionType.v_20_2;
+		else if(server.contains("v1_20_R1")) version = VersionType.v_20_1;
+		else if(server.contains("v1_19_R3")) version = VersionType.v_19_3;
+		else if(server.contains("v1_19_R2")) version = VersionType.v_19_2;
+		else if(server.contains("v1_19_R1")) version = VersionType.v_19_1;
+		else if(server.contains("v1_18_R2")) version = VersionType.v_18_2;
+		else if(server.contains("v1_18_R1")) version = VersionType.v_18_1;
+		else if(server.contains("v1_17_R1")) version = VersionType.v_17_1;
+		else if(server.contains("v1_16_R3")) version = VersionType.v_16_3;
+		else if(server.contains("v1_16_R2")) version = VersionType.v_16_2;
+		else if(server.contains("v1_16_R1")) version = VersionType.v_16_1;
+		else if(server.contains("v1_15_R1")) version = VersionType.v_15_1;
+		else if(server.contains("v1_14_R1")) version = VersionType.v_14_1;
+		else version = null;
+		v = version == null ? null : version.build();
 	}
 
 	public enum VersionType {

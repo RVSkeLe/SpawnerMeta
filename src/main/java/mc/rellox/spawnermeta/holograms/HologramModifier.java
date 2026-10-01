@@ -14,19 +14,18 @@ public record HologramModifier(IVersion version) {
 	}
 	
 	public Object create(Location location, String name) {
-		return version == null ? null : version.hologram(location, name);
+		return version.hologram(location, name);
 	}
 	
 	public void spawn(Player player, Object entity) {
-		if(version != null) version.send(player, version.spawn(entity), version.meta(entity));
+		version.send(player, version.spawn(entity), version.meta(entity));
 	}
 
 	public void destroy(Player player, Object entity) {
-		if(version != null) version.send(player, version.destroy(entity));
+		version.send(player, version.destroy(entity));
 	}
 
 	public void update(Set<Player> players, Object entity, String name) {
-		if(version == null) return;
 		version.name(entity, name);
 		version.send(players, version.meta(entity));
 	}

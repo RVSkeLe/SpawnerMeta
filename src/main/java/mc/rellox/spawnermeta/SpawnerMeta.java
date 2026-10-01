@@ -38,9 +38,12 @@ public final class SpawnerMeta extends JavaPlugin {
     
     @Override
     public void onLoad() {
-		loaded = true;
-		plugin = this;
-		this.api = new APIRegistry();
+		loaded = Version.version != null;
+
+		if(loaded) {
+			plugin = this;
+			this.api = new APIRegistry();
+		}
     }
 
 	@Override
@@ -56,14 +59,6 @@ public final class SpawnerMeta extends JavaPlugin {
 		
 		if(loaded) {
 			Text.logLoad();
-			if(!Version.holograms()) {
-				String reason = Version.recognized
-						? "failed to initialize the server version adapter"
-						: "unknown server version " + Bukkit.getBukkitVersion();
-				getLogger().warning("Holograms are disabled: " + reason + ". All other features will remain enabled.");
-				if(Version.hologramFailure() != null)
-					getLogger().warning("Hologram adapter error: " + Version.hologramFailure().getMessage());
-			}
 			Utility.check(74188, s -> {
 				var version = version();
 				if(!Utility.isDouble(s) || !Utility.isDouble(version)) return;
@@ -81,6 +76,9 @@ public final class SpawnerMeta extends JavaPlugin {
 			SpawningManager.initialize();
 			LocationRegistry.initialize();
 			initializeMetrics();
+		} else {
+			Text.logFail("failed to load, invalid server version!");
+			Bukkit.getPluginManager().disablePlugin(this);
 		}
 	}
 	
