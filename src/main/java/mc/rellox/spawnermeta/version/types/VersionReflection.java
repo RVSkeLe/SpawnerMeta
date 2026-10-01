@@ -28,7 +28,7 @@ final class VersionReflection {
 		Constructor<?> constructor = findConstructor(type, parameters);
 		try {
 			constructor.setAccessible(true);
-			return LOOKUP.unreflectConstructor(constructor);
+			return LOOKUP.unreflectConstructor(constructor).asFixedArity();
 		} catch (IllegalAccessException e) {
 			throw missing("access constructor " + type.getName() + signature(parameters), e);
 		}
