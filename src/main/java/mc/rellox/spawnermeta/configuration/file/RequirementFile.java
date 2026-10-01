@@ -42,6 +42,7 @@ public class RequirementFile extends AbstractFile {
 		put(SpawnerType.BOGGED, "-4", air, "");
 		put(SpawnerType.BREEZE, "-11", air, "");
 		put(SpawnerType.CAMEL, "9+", air, List.of(sand, red));
+		put(SpawnerType.CAMEL_HUSK, "-4", air, List.of(sand, red), true);
 		put(SpawnerType.CAT, "9+", air, solid);
 		put(SpawnerType.CAVE_SPIDER, "-4", air, "", true);
 		put(SpawnerType.CHICKEN, "9+", air, grass);
@@ -74,10 +75,12 @@ public class RequirementFile extends AbstractFile {
 		put(SpawnerType.LLAMA, "7+", air, grass);
 		put(SpawnerType.MAGMA_CUBE, "", air, "");
 		put(SpawnerType.MULE, "9+", air, grass);
+		put(SpawnerType.NAUTILUS, "", water, "");
 		put(SpawnerType.MUSHROOM_COW, "9+", air, "MYCELIUM");
 		put(SpawnerType.OCELOT, "9+", air, grass);
 		put(SpawnerType.PANDA, "9+", air, grass);
 		put(SpawnerType.PARROT, "9+", air, "");
+		put(SpawnerType.PARCHED, "-4", air, List.of(sand, red), true);
 		put(SpawnerType.PHANTOM, "-4", air, "", true);
 		put(SpawnerType.PIG, "9+", air, grass);
 		put(SpawnerType.PIG_ZOMBIE, "-11", air, "", true);
@@ -101,6 +104,7 @@ public class RequirementFile extends AbstractFile {
 		put(SpawnerType.SQUID, "", water, "");
 		put(SpawnerType.STRAY, "-4", air, "", true);
 		put(SpawnerType.STRIDER, "", air, "LAVA");
+		put(SpawnerType.SULFUR_CUBE, "", air, "");
 		put(SpawnerType.TADPOLE, "", water, "");
 		put(SpawnerType.TRADER_LLAMA, "7+", air, solid);
 		put(SpawnerType.TROPICAL_FISH, "", water, "");
@@ -117,6 +121,7 @@ public class RequirementFile extends AbstractFile {
 		put(SpawnerType.ZOGLIN, "", air, "");
 		put(SpawnerType.ZOMBIE, "-4", air, "", true);
 		put(SpawnerType.ZOMBIE_HORSE, "", air, "");
+		put(SpawnerType.ZOMBIE_NAUTILUS, "", water, "");
 		put(SpawnerType.ZOMBIE_VILLAGER, "-4", air, solid, true);
 		put(SpawnerType.ZOMBIFIED_PIGLIN, "-11", air, "", true);
 		
