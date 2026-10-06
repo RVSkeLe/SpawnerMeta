@@ -68,12 +68,10 @@ public class HookPlotSquared implements HookInstance {
 		World world = Bukkit.getWorld(event.getWorld());
 		if(world == null) return;
 
-		Plot deleted = event.getPlot();
+		Plot deleted = event.getPlot().getBasePlot(false);
 
-		GeneratorRegistry.remove(world, true, generator -> {
-			Plot plot = plot(generator.block());
-			return plot != null && plot.getId().equals(deleted.getId());
-		});
+		GeneratorRegistry.remove(world, true,
+				generator -> deleted.equals(plot(generator.block())));
 	}
 
 	public boolean isPlotWorld(World world) {
@@ -87,8 +85,7 @@ public class HookPlotSquared implements HookInstance {
 		if(source == null) return true;
 
 		Plot target = plot(entity.getLocation());
-		return target != null
-				&& source.getBasePlot(false).equals(target.getBasePlot(false));
+		return source.equals(target);
 	}
 
 	private boolean check(World world) {
